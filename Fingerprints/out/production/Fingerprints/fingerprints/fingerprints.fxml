@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<BorderPane fx:id="mainPane" prefHeight="600" prefWidth="800" style="-fx-background-color: BlanchedAlmond;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fingerprints.Controller">
+    <top>
+        <MenuBar style="-fx-background-color: BurlyWood;" BorderPane.alignment="TOP_LEFT">
+                 <menus>
+                     <Menu mnemonicParsing="false" text="Image">
+                         <items>
+                             <MenuItem fx:id="loadImageMenu" mnemonicParsing="false" onAction="#handleLoadImageButton" text="Load Image" />
+                             <MenuItem fx:id="saveImageMenu" mnemonicParsing="false" onAction="#handleSaveImageButton" text="Save Image" />
+                         </items>
+                     </Menu>
+                     <Menu mnemonicParsing="false" text="Fingerprints">
+                         <items>
+                             <MenuItem fx:id="binarizationMenu" mnemonicParsing="false" onAction="#handleBinarizationButton" text="Binarization" />
+                             <MenuItem fx:id="minutiaeMenu" mnemonicParsing="false" onAction="#handleMinutiaeButton" text="Thinning" />
+                             <MenuItem fx:id="thinningMenu" mnemonicParsing="false" onAction="#handleThinningButton" text="Minutiae" />
+
+                         </items>
+                     </Menu>
+                 </menus>
+    </MenuBar>
+    </top>
+    <center>
+        <ScrollPane prefHeight="699.0" prefWidth="544.0" BorderPane.alignment="CENTER">
+            <content>
+                <ImageView fx:id="imageView" fitHeight="500.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true" />
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

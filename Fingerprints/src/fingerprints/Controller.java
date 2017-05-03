@@ -15,16 +15,27 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 
 
 public class Controller {
+
+    public class Pixel {
+        public int x;
+        public int y;
+
+        public Pixel(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 
     private double imageWidth;
     private double imageHeight;
 
     @FXML
     private ImageView imageView;
+
     @FXML
 
     public void handleLoadImageButton() {
@@ -99,7 +110,7 @@ public class Controller {
     }
 
     private void otsuMethod() {
-        int [] rgbTable = countPixels();
+        int[] rgbTable = countPixels();
         int total = (int) imageHeight * (int) imageWidth;
         float sum = 0;
         for (int i = 0; i < 256; i++) {
@@ -132,8 +143,9 @@ public class Controller {
         }
         createBinaryImage(threshold);
     }
+
     private int[] countPixels() {
-        int []rgbTable = new int[256];
+        int[] rgbTable = new int[256];
 
         for (int i = 0; i < 256; i++) {
             rgbTable[i] = 0;
@@ -152,6 +164,7 @@ public class Controller {
 
         return rgbTable;
     }
+
     private void createBinaryImage(int threshold) {
 
         WritableImage wi = new WritableImage((int) imageWidth, (int) imageHeight);
@@ -160,7 +173,7 @@ public class Controller {
 
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
-                int[] rgbColor = analyzePixel(i, j);kon
+                int[] rgbColor = analyzePixel(i, j);
                 if (rgbColor[3] <= threshold)
                     color = Color.BLACK;
                 else
@@ -173,6 +186,7 @@ public class Controller {
         imageView.setImage(wi);
 
     }
+
     private int[] analyzePixel(int x, int y) {
         int pixel = imageView.getImage().getPixelReader().getArgb(x, y);
         int[] rgbTable = new int[4];
@@ -184,9 +198,120 @@ public class Controller {
         return rgbTable;
     }
 
-    public void handleThinningButton(ActionEvent actionEvent) {
+    public void handleThinningButton() {
+
     }
 
-    public void handleMinutiaeButton(ActionEvent actionEvent) {
+    public void handleMinutiaeButton() {
+        findMinutiae();
+
+
+
+    }
+
+    private void findMinutiae() {
+        ArrayList<Pixel> minutiaeList = new ArrayList<>();
+        for (int i = 4; i < imageWidth - 4; i++) {
+            for (int j = 4; j < imageHeight - 4; j++) {
+                if (isBifurcation(i, j))
+                    minutiaeList.add(new Pixel(i, j));
+            }
+
+        }
+
+        removeReplications(minutiaeList);
+        WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
+
+        PixelWriter writer = wi.getPixelWriter();
+
+        for (Pixel p : minutiaeList){
+            writer.setColor(p.x, p.y, Color.RED);
+        } 
+//        for (int i = 0; i < imageWidth; i++) {
+//            for (int j = 0; j < imageHeight ; j++) {
+//                if(wi.getPixelReader().getColor(i,j).equals(Color.BLACK))
+//                    writer.setColor(i, j, Color.BLACK);
+//                else if (wi.getPixelReader().getColor(i,j).equals(Color.WHITE))
+//                writer.setColor(i, j, Color.WHITE);
+//
+//            }
+//
+//        }
+
+        imageView.setImage(wi);
+    }
+
+    private void removeReplications(ArrayList<Pixel> list) {
+        for (int i = 0; i < list.size(); i++){
+            Pixel p = list.get(i);
+            for (int j = 0; j < list.size(); j++) {
+                Pixel q = list.get(j);
+                if (countDistance(p, q) < 20)
+                    list.remove(j);
+            }
+        }
+    }
+
+    private double countDistance(Pixel p, Pixel q) {
+        return Math.sqrt((p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y));
+
+    }
+
+    private boolean isBifurcation(int x, int y) {
+        //9x9 square
+
+        //top edge
+        int outerSquareCounter = 0;
+        for (int i = x - 4; i <= x + 4; i++)
+            if (imageView.getImage().getPixelReader().getColor(i, y + 4).equals(Color.BLACK))
+                outerSquareCounter++;
+
+
+        //right edge
+        for (int i = y - 4; i <= y + 4; i++)
+            if (imageView.getImage().getPixelReader().getColor(x + 4, i).equals(Color.BLACK))
+                outerSquareCounter++;
+
+        //bottom edge
+        for (int i = x - 4; i <= x + 4; i++)
+            if (imageView.getImage().getPixelReader().getColor(i, y - 4).equals(Color.BLACK))
+                outerSquareCounter++;
+
+        //left edge
+        for (int i = y - 4; i <= y + 4; i++)
+            if (imageView.getImage().getPixelReader().getColor(x - 4, i).equals(Color.BLACK))
+                outerSquareCounter++;
+
+        if (outerSquareCounter != 3)
+            return false;
+
+
+        //5x5 square
+
+        //top edge
+        int innerSquareCounter = 0;
+        for (int i = x - 2; i <= x + 2; i++)
+            if (imageView.getImage().getPixelReader().getColor(i, y + 2).equals(Color.BLACK))
+                innerSquareCounter++;
+
+
+        //right edge
+        for (int i = y - 2; i <= y + 2; i++)
+            if (imageView.getImage().getPixelReader().getColor(x + 2, i).equals(Color.BLACK))
+                innerSquareCounter++;
+
+        //bottom edge
+        for (int i = x - 2; i <= x + 2; i++)
+            if (imageView.getImage().getPixelReader().getColor(i, y - 2).equals(Color.BLACK))
+                innerSquareCounter++;
+
+        //left edge
+        for (int i = y - 2; i <= y + 2; i++)
+            if (imageView.getImage().getPixelReader().getColor(x - 2, i).equals(Color.BLACK))
+                innerSquareCounter++;
+
+        if (innerSquareCounter != 3)
+            return false;
+        return true;
     }
 }

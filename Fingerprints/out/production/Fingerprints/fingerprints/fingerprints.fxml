@@ -25,8 +25,8 @@
                      <Menu mnemonicParsing="false" text="Fingerprints">
                          <items>
                              <MenuItem fx:id="binarizationMenu" mnemonicParsing="false" onAction="#handleBinarizationButton" text="Binarization" />
-                             <MenuItem fx:id="minutiaeMenu" mnemonicParsing="false" onAction="#handleMinutiaeButton" text="Thinning" />
-                             <MenuItem fx:id="thinningMenu" mnemonicParsing="false" onAction="#handleThinningButton" text="Minutiae" />
+                             <MenuItem fx:id="minutiaeMenu" mnemonicParsing="false" onAction="#handleThinningButton" text="Thinning" />
+                             <MenuItem fx:id="thinningMenu" mnemonicParsing="false" onAction="#handleMinutiaeButton" text="Minutiae" />
 
                          </items>
                      </Menu>

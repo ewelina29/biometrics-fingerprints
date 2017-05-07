@@ -34,7 +34,7 @@ public class Controller {
     private double imageHeight;
 
     @FXML
-    private ImageView imageView;
+    public ImageView imageView;
 
     @FXML
 
@@ -224,6 +224,11 @@ public class Controller {
 
         PixelWriter writer = wi.getPixelWriter();
 
+        for ( int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                writer.setColor(i,j,imageView.getImage().getPixelReader().getColor(i,j));
+            }
+        }
         for (Pixel p : minutiaeList){
             writer.setColor(p.x, p.y, Color.RED);
         } 

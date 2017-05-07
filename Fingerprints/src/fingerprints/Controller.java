@@ -38,6 +38,20 @@ public class Controller implements Initializable{
             this.x = x;
             this.y = y;
         }
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
     }
 
     private double imageWidth;
@@ -50,7 +64,7 @@ public class Controller implements Initializable{
     @FXML
     public Slider slider;
 
-
+    @FXML
     public void handleLoadImageButton() {
         loadImage();
     }
@@ -117,7 +131,7 @@ public class Controller implements Initializable{
         }
 
     }
-
+    @FXML
     private void handleScaleSlider() {
         slider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
             scale = slider.getValue();
@@ -129,7 +143,7 @@ public class Controller implements Initializable{
         imageView.setFitHeight(imageHeight * scale);
         imageView.setFitWidth(imageWidth * scale);
     }
-
+    @FXML
     public void handleBinarizationButton(ActionEvent actionEvent) {
         otsuMethod();
     }
@@ -222,11 +236,11 @@ public class Controller implements Initializable{
 
         return rgbTable;
     }
-
+    @FXML
     public void handleThinningButton() {
-
+        thinImage();
     }
-
+    @FXML
     public void handleMinutiaeButton() {
         findMinutiae();
 
@@ -343,5 +357,38 @@ public class Controller implements Initializable{
         if (innerSquareCounter != 3)
             return false;
         return true;
+    }
+    private void thinImage(){
+        otsuMethod();
+        int[][] imageArray = new int[(int)imageWidth][(int)imageHeight];
+        for (int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                if(imageView.getImage().getPixelReader().getColor(i,j).equals(Color.BLACK)){
+                    imageArray[i][j]=1;
+                }
+                else{
+                    imageArray[i][j]=0;
+                }
+            }
+        }
+        ThinningService ts=new ThinningService();
+        ts.doZhangSuenThinning(imageArray,true);
+
+        WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
+
+        PixelWriter writer = wi.getPixelWriter();
+
+        for ( int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                if(imageArray[i][j]==1){
+                    writer.setColor(i,j,Color.BLACK);
+                }
+                else{
+                    writer.setColor(i,j,Color.WHITE);
+                }
+
+            }
+        }
+        imageView.setImage(wi);
     }
 }

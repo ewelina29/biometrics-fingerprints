@@ -3,7 +3,9 @@ package fingerprints;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -15,10 +17,18 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 
-public class Controller {
+public class Controller implements Initializable{
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        handleScaleSlider();
+
+    }
 
     public class Pixel {
         public int x;
@@ -32,11 +42,14 @@ public class Controller {
 
     private double imageWidth;
     private double imageHeight;
+    private double scale;
 
     @FXML
     public ImageView imageView;
 
     @FXML
+    public Slider slider;
+
 
     public void handleLoadImageButton() {
         loadImage();
@@ -103,6 +116,18 @@ public class Controller {
             alert.showAndWait();
         }
 
+    }
+
+    private void handleScaleSlider() {
+        slider.valueChangingProperty().addListener((observable, oldValue, newValue) -> {
+            scale = slider.getValue();
+            scaleImage();
+        });
+    }
+
+    private void scaleImage() {
+        imageView.setFitHeight(imageHeight * scale);
+        imageView.setFitWidth(imageWidth * scale);
     }
 
     public void handleBinarizationButton(ActionEvent actionEvent) {

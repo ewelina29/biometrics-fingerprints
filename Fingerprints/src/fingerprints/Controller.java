@@ -258,7 +258,7 @@ public class Controller implements Initializable{
 
         }
 
-        removeReplications(minutiaeList);
+//        removeReplications(minutiaeList);
         WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
         PixelWriter writer = wi.getPixelWriter();
@@ -269,8 +269,14 @@ public class Controller implements Initializable{
             }
         }
         for (Pixel p : minutiaeList){
-            writer.setColor(p.x, p.y, Color.RED);
-        } 
+//            for (int i = p.x-1; i <= p.x+1; i++) {
+//                for (int j = p.y-1; j < p.y+1; j++) {
+                    writer.setColor(p.x,p.y , Color.RED);
+                }
+//            }
+//            writer.setColor(p.x, p.y, Color.BLACK);
+
+//        }
 //        for (int i = 0; i < imageWidth; i++) {
 //            for (int j = 0; j < imageHeight ; j++) {
 //                if(wi.getPixelReader().getColor(i,j).equals(Color.BLACK))
@@ -285,6 +291,7 @@ public class Controller implements Initializable{
         imageView.setImage(wi);
     }
 
+    // tu coś nie działa do końca, bo ucina niektóre poprawne piksele
     private void removeReplications(ArrayList<Pixel> list) {
         for (int i = 0; i < list.size(); i++){
             Pixel p = list.get(i);
@@ -297,32 +304,68 @@ public class Controller implements Initializable{
     }
 
     private double countDistance(Pixel p, Pixel q) {
-        return Math.sqrt((p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y));
+        return Math.sqrt(((p.x - q.x) * (p.x - q.x)) + ((p.y - q.y) * (p.y - q.y)));
 
     }
 
     private boolean isBifurcation(int x, int y) {
-        //9x9 square
 
+        // II wersja
+//        int counter = 0;
+//        if(!imageView.getImage().getPixelReader().getColor(x, y).equals(Color.BLACK))
+//            return false;
+//
+//        if (imageView.getImage().getPixelReader().getColor(x-1, y - 1).equals(Color.BLACK))
+//            counter++;
+//
+//        if (imageView.getImage().getPixelReader().getColor(x, y - 1).equals(Color.BLACK))
+//            counter++;
+//
+//        if (imageView.getImage().getPixelReader().getColor(x+1, y - 1).equals(Color.BLACK))
+//            counter++;
+//
+//        if (imageView.getImage().getPixelReader().getColor(x-1, y).equals(Color.BLACK))
+//            counter++;
+//
+//        if (imageView.getImage().getPixelReader().getColor(x+1, y).equals(Color.BLACK))
+//            counter++;
+//        if (imageView.getImage().getPixelReader().getColor(x-1, y+1).equals(Color.BLACK))
+//            counter++;
+//        if (imageView.getImage().getPixelReader().getColor(x, y+ 1).equals(Color.BLACK))
+//            counter++;
+//        if (imageView.getImage().getPixelReader().getColor(x+1, y+1).equals(Color.BLACK))
+//            counter++;
+//
+//
+//       if(counter == 3)
+//            return true;
+//        return false;
+
+
+// I wersja - bezpieczniejsza chyba
+
+        //9x9 square
+        if(!imageView.getImage().getPixelReader().getColor(x, y).equals(Color.BLACK))
+            return false;
         //top edge
         int outerSquareCounter = 0;
         for (int i = x - 4; i <= x + 4; i++)
-            if (imageView.getImage().getPixelReader().getColor(i, y + 4).equals(Color.BLACK))
+            if (imageView.getImage().getPixelReader().getColor(i, y - 4).equals(Color.BLACK))
                 outerSquareCounter++;
 
 
         //right edge
-        for (int i = y - 4; i <= y + 4; i++)
+        for (int i = y - 3; i < y + 4; i++)
             if (imageView.getImage().getPixelReader().getColor(x + 4, i).equals(Color.BLACK))
                 outerSquareCounter++;
 
         //bottom edge
         for (int i = x - 4; i <= x + 4; i++)
-            if (imageView.getImage().getPixelReader().getColor(i, y - 4).equals(Color.BLACK))
+            if (imageView.getImage().getPixelReader().getColor(i, y + 4).equals(Color.BLACK))
                 outerSquareCounter++;
 
         //left edge
-        for (int i = y - 4; i <= y + 4; i++)
+        for (int i = y - 3; i < y + 4; i++)
             if (imageView.getImage().getPixelReader().getColor(x - 4, i).equals(Color.BLACK))
                 outerSquareCounter++;
 
@@ -335,29 +378,29 @@ public class Controller implements Initializable{
         //top edge
         int innerSquareCounter = 0;
         for (int i = x - 2; i <= x + 2; i++)
-            if (imageView.getImage().getPixelReader().getColor(i, y + 2).equals(Color.BLACK))
+            if (imageView.getImage().getPixelReader().getColor(i, y - 2).equals(Color.BLACK))
                 innerSquareCounter++;
 
 
         //right edge
-        for (int i = y - 2; i <= y + 2; i++)
+        for (int i = y - 1; i < y + 2; i++)
             if (imageView.getImage().getPixelReader().getColor(x + 2, i).equals(Color.BLACK))
                 innerSquareCounter++;
 
         //bottom edge
         for (int i = x - 2; i <= x + 2; i++)
-            if (imageView.getImage().getPixelReader().getColor(i, y - 2).equals(Color.BLACK))
+            if (imageView.getImage().getPixelReader().getColor(i, y + 2).equals(Color.BLACK))
                 innerSquareCounter++;
 
         //left edge
-        for (int i = y - 2; i <= y + 2; i++)
+        for (int i = y - 1; i < y + 2; i++)
             if (imageView.getImage().getPixelReader().getColor(x - 2, i).equals(Color.BLACK))
                 innerSquareCounter++;
 
-        if (innerSquareCounter != 3)
-            return false;
-        return true;
+        return innerSquareCounter == 3;
     }
+
+
     private void thinImage(){
         otsuMethod();
         int[][] imageArray = new int[(int)imageWidth][(int)imageHeight];

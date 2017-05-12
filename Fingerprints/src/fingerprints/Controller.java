@@ -18,8 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class Controller implements Initializable{
@@ -400,8 +399,8 @@ public class Controller implements Initializable{
         return innerSquareCounter == 3;
     }
 
-
-    private void thinImage(){
+    //metoda Zhunga
+   /* private void thinImage(){
         otsuMethod();
         int[][] imageArray = new int[(int)imageWidth][(int)imageHeight];
         for (int i=0;i<imageWidth;i++){
@@ -433,5 +432,40 @@ public class Controller implements Initializable{
             }
         }
         imageView.setImage(wi);
+    }*/
+   //metoda KMM
+    private void thinImage() {
+        otsuMethod();
+        int[][] imageArray = new int[(int)imageWidth][(int)imageHeight];
+        for (int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                if(imageView.getImage().getPixelReader().getColor(i,j).equals(Color.BLACK)){
+                    imageArray[i][j]=1;
+                }
+                else{
+                    imageArray[i][j]=0;
+                }
+            }
+        }
+
+        Kmm k=new Kmm();
+        k.thin(imageArray,(int)imageHeight,(int)imageWidth);
+        WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
+
+        PixelWriter writer = wi.getPixelWriter();
+
+        for ( int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                if(imageArray[i][j]!=0){
+                    writer.setColor(i,j,Color.BLACK);
+                }
+                else{
+                    writer.setColor(i,j,Color.WHITE);
+                }
+
+            }
+        }
+        imageView.setImage(wi);
+
     }
 }

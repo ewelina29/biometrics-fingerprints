@@ -325,11 +325,11 @@ public class Controller implements Initializable{
     	//right edge
         for (int i = y - 1; i < y + 2; i++)
             if (!imageView.getImage().getPixelReader().getColor(x + 1, i).equals(Color.WHITE))
-                return false;
+            	SquareCounter++;
       
         //top edge
         if (!imageView.getImage().getPixelReader().getColor(x, y + 1).equals(Color.WHITE))
-                return false;
+        		SquareCounter++;
     	//bottom edge
         if (!imageView.getImage().getPixelReader().getColor(x, y - 1).equals(Color.WHITE))
             	SquareCounter++;

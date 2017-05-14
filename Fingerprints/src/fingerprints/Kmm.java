@@ -143,7 +143,7 @@ public final class Kmm
 
 
        return image;
-    }
+    }	
 
     private int calculateWeight(int i, int j,int[][]image) {
         int count=0;

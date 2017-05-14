@@ -242,9 +242,9 @@ public class Controller implements Initializable{
     @FXML
     public void handleMinutiaeButton() {
         findMinutiae();
-
-
-
+    }
+    public void handleEndingButton() {
+    	findEnding();
     }
 
     private void findMinutiae() {
@@ -257,7 +257,7 @@ public class Controller implements Initializable{
 
         }
 
-//        removeReplications(minutiaeList);
+        removeReplications(minutiaeList);
         WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
         PixelWriter writer = wi.getPixelWriter();
@@ -289,8 +289,60 @@ public class Controller implements Initializable{
 
         imageView.setImage(wi);
     }
+    
+    
+    private void findEnding() {
+        ArrayList<Pixel> EndingList = new ArrayList<>();
+        for (int i = 1; i < imageWidth - 1; i++) {
+            for (int j = 1; j < imageHeight - 1; j++) {
+                if (is(i, j))
+                    EndingList.add(new Pixel(i, j));
+            }
+        }
+        WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
-    // tu coś nie działa do końca, bo ucina niektóre poprawne piksele
+        PixelWriter writer = wi.getPixelWriter();
+
+        for ( int i=0;i<imageWidth;i++){
+            for (int j=0;j<imageHeight;j++){
+                writer.setColor(i,j,imageView.getImage().getPixelReader().getColor(i,j));
+            }
+        }
+        for (Pixel p : EndingList){
+        			writer.setColor(p.x,p.y , Color.BLUE);	
+                }
+
+        imageView.setImage(wi);
+    }
+    private boolean is(int x, int y) {
+		// TODO Auto-generated method stub
+    	
+    	if(!imageView.getImage().getPixelReader().getColor(x, y).equals(Color.BLACK))
+            return false;
+    	
+    	int SquareCounter = 0;
+   
+    	//right edge
+        for (int i = y - 1; i < y + 2; i++)
+            if (!imageView.getImage().getPixelReader().getColor(x + 1, i).equals(Color.WHITE))
+                return false;
+      
+        //top edge
+        if (!imageView.getImage().getPixelReader().getColor(x, y + 1).equals(Color.WHITE))
+                return false;
+    	//bottom edge
+        if (!imageView.getImage().getPixelReader().getColor(x, y - 1).equals(Color.WHITE))
+            	SquareCounter++;
+        //left edge
+        for (int i = y - 1; i < y + 2; i++)
+            if (!imageView.getImage().getPixelReader().getColor(x - 1, i).equals(Color.WHITE))
+                SquareCounter++;
+		
+        return SquareCounter==1;
+    }
+	// tu coś nie działa do końca, bo ucina niektóre poprawne piksele
+    
+    
     private void removeReplications(ArrayList<Pixel> list) {
         for (int i = 0; i < list.size(); i++){
             Pixel p = list.get(i);
@@ -298,6 +350,7 @@ public class Controller implements Initializable{
                 Pixel q = list.get(j);
                 if (countDistance(p, q) < 20)
                     list.remove(j);
+               
             }
         }
     }
@@ -396,7 +449,7 @@ public class Controller implements Initializable{
             if (imageView.getImage().getPixelReader().getColor(x - 2, i).equals(Color.BLACK))
                 innerSquareCounter++;
 
-        return innerSquareCounter == 3;
+        return innerSquareCounter==3;
     }
 
     //metoda Zhunga

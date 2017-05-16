@@ -18,7 +18,8 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 
 public class Controller implements Initializable{
@@ -251,13 +252,13 @@ public class Controller implements Initializable{
         ArrayList<Pixel> minutiaeList = new ArrayList<>();
         for (int i = 4; i < imageWidth - 4; i++) {
             for (int j = 4; j < imageHeight - 4; j++) {
-                if (isBifurcation(i, j))
+                if (isBifurcation(i, j) && findReplications(new Pixel(i, j), minutiaeList))
                     minutiaeList.add(new Pixel(i, j));
             }
 
         }
 
-        removeReplications(minutiaeList);
+      //  removeReplications(minutiaeList);
         WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
         PixelWriter writer = wi.getPixelWriter();
@@ -270,7 +271,14 @@ public class Controller implements Initializable{
         for (Pixel p : minutiaeList){
 //            for (int i = p.x-1; i <= p.x+1; i++) {
 //                for (int j = p.y-1; j < p.y+1; j++) {
-                    writer.setColor(p.x,p.y , Color.RED);
+            writer.setColor(p.x+1,p.y , Color.RED);
+            writer.setColor(p.x+1,p.y+1 , Color.RED);
+            writer.setColor(p.x,p.y+1 , Color.RED);
+            writer.setColor(p.x+1,p.y-1 , Color.RED);
+            writer.setColor(p.x-1,p.y+1 , Color.RED);
+            writer.setColor(p.x-1,p.y-1 , Color.RED);
+            writer.setColor(p.x,p.y-1 , Color.RED);
+            writer.setColor(p.x-1,p.y , Color.RED);
                 }
 //            }
 //            writer.setColor(p.x, p.y, Color.BLACK);
@@ -309,7 +317,15 @@ public class Controller implements Initializable{
             }
         }
         for (Pixel p : EndingList){
-        			writer.setColor(p.x,p.y , Color.BLUE);	
+        			//writer.setColor(p.x,p.y , Color.DEEPPINK);
+            writer.setColor(p.x+1,p.y , Color.DEEPPINK);
+            writer.setColor(p.x+1,p.y+1 , Color.DEEPPINK);
+            writer.setColor(p.x,p.y+1 , Color.DEEPPINK);
+            writer.setColor(p.x+1,p.y-1 , Color.DEEPPINK);
+            writer.setColor(p.x-1,p.y+1 , Color.DEEPPINK);
+            writer.setColor(p.x-1,p.y-1 , Color.DEEPPINK);
+            writer.setColor(p.x,p.y-1 , Color.DEEPPINK);
+            writer.setColor(p.x-1,p.y , Color.DEEPPINK);
                 }
 
         imageView.setImage(wi);
@@ -348,11 +364,19 @@ public class Controller implements Initializable{
             Pixel p = list.get(i);
             for (int j = 0; j < list.size(); j++) {
                 Pixel q = list.get(j);
-                if (countDistance(p, q) < 20)
+                if (countDistance(p, q) < 20 && i!=j)
                     list.remove(j);
                
             }
         }
+
+    }
+    private boolean findReplications(Pixel p, ArrayList<Pixel> list){
+        for (int i=0; i<list.size(); i++){
+            if (countDistance(p, list.get(i)) < 20)
+                return false;
+        }
+        return true;
     }
 
     private double countDistance(Pixel p, Pixel q) {

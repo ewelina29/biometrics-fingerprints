@@ -301,12 +301,15 @@ public class Controller implements Initializable{
     
     private void findEnding() {
         ArrayList<Pixel> EndingList = new ArrayList<>();
-        for (int i = 1; i < imageWidth - 1; i++) {
-            for (int j = 1; j < imageHeight - 1; j++) {
+        for (int i = 25; i < imageWidth - 25; i++) {
+            for (int j = 30; j < imageHeight - 30; j++) {
                 if (is(i, j))
-                    EndingList.add(new Pixel(i, j));
+                	if(EndingIsGood(i,j))
+                		EndingList.add(new Pixel(i, j));
+                
             }
         }
+        
         WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
         PixelWriter writer = wi.getPixelWriter();
@@ -358,6 +361,29 @@ public class Controller implements Initializable{
     }
 	// tu coś nie działa do końca, bo ucina niektóre poprawne piksele
     
+    private boolean EndingIsGood(int x,int y)
+    {
+    	int left=0,top=0,right=0,bottom=0;
+    	for(int i=25;i>0;i--)
+    	{
+    		if (imageView.getImage().getPixelReader().getColor(x - i , y).equals(Color.WHITE))
+    			left++;
+    		if (imageView.getImage().getPixelReader().getColor(x + i, y).equals(Color.WHITE))
+                right++;
+    	}
+    	for(int i=30;i>0;i--)
+    	{
+    		if (imageView.getImage().getPixelReader().getColor(x , y + i).equals(Color.WHITE))
+                top++;
+    		if (imageView.getImage().getPixelReader().getColor(x , y - i).equals(Color.WHITE))
+                bottom++;
+    	}
+    
+    	
+        if(left==25 || right==25 || top==30 || bottom==30)
+        	return false;
+        return true;
+    }
     
     private void removeReplications(ArrayList<Pixel> list) {
         for (int i = 0; i < list.size(); i++){

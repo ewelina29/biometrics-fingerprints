@@ -25,7 +25,7 @@
                          <items>
                              <MenuItem fx:id="binarizationMenu" mnemonicParsing="false" onAction="#handleBinarizationButton" text="Binarization" />
                              <MenuItem fx:id="thinningMenu" mnemonicParsing="false" onAction="#handleThinningButton" text="Thinning" />
-                             <MenuItem fx:id="minutiaeMenu" mnemonicParsing="false" onAction="#handleMinutiaeButton" text="Bifurcation" />
+                             <MenuItem fx:id="bifurcationMenu" mnemonicParsing="false" onAction="#handleBifurcationButton" text="Bifurcation" />
           			         <MenuItem fx:id="EndingMenu1" mnemonicParsing="false" onAction="#handleEndingButton" text="Ending" />
 							
                          </items>

@@ -241,24 +241,24 @@ public class Controller implements Initializable{
         thinImage();
     }
     @FXML
-    public void handleMinutiaeButton() {
-        findMinutiae();
+    public void handleBifurcationButton() {
+        findBifurcation();
     }
     public void handleEndingButton() {
     	findEnding();
     }
 
-    private void findMinutiae() {
+    private void findBifurcation() {
         ArrayList<Pixel> minutiaeList = new ArrayList<>();
         for (int i = 4; i < imageWidth - 4; i++) {
             for (int j = 4; j < imageHeight - 4; j++) {
-                if (isBifurcation(i, j) && findReplications(new Pixel(i, j), minutiaeList))
+                if (isBifurcation(i, j)) // && findReplications(new Pixel(i, j), minutiaeList))
                     minutiaeList.add(new Pixel(i, j));
             }
 
         }
 
-      //  removeReplications(minutiaeList);
+//        removeReplications(minutiaeList);
         WritableImage wi = new WritableImage((int)imageWidth, (int)imageHeight);
 
         PixelWriter writer = wi.getPixelWriter();
@@ -359,8 +359,7 @@ public class Controller implements Initializable{
 		
         return SquareCounter==1;
     }
-	// tu coś nie działa do końca, bo ucina niektóre poprawne piksele
-    
+
     private boolean EndingIsGood(int x,int y)
     {
     	int left=0,top=0,right=0,bottom=0;
@@ -411,40 +410,6 @@ public class Controller implements Initializable{
     }
 
     private boolean isBifurcation(int x, int y) {
-
-        // II wersja
-//        int counter = 0;
-//        if(!imageView.getImage().getPixelReader().getColor(x, y).equals(Color.BLACK))
-//            return false;
-//
-//        if (imageView.getImage().getPixelReader().getColor(x-1, y - 1).equals(Color.BLACK))
-//            counter++;
-//
-//        if (imageView.getImage().getPixelReader().getColor(x, y - 1).equals(Color.BLACK))
-//            counter++;
-//
-//        if (imageView.getImage().getPixelReader().getColor(x+1, y - 1).equals(Color.BLACK))
-//            counter++;
-//
-//        if (imageView.getImage().getPixelReader().getColor(x-1, y).equals(Color.BLACK))
-//            counter++;
-//
-//        if (imageView.getImage().getPixelReader().getColor(x+1, y).equals(Color.BLACK))
-//            counter++;
-//        if (imageView.getImage().getPixelReader().getColor(x-1, y+1).equals(Color.BLACK))
-//            counter++;
-//        if (imageView.getImage().getPixelReader().getColor(x, y+ 1).equals(Color.BLACK))
-//            counter++;
-//        if (imageView.getImage().getPixelReader().getColor(x+1, y+1).equals(Color.BLACK))
-//            counter++;
-//
-//
-//       if(counter == 3)
-//            return true;
-//        return false;
-
-
-// I wersja - bezpieczniejsza chyba
 
         //9x9 square
         if(!imageView.getImage().getPixelReader().getColor(x, y).equals(Color.BLACK))
